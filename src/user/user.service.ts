@@ -53,4 +53,11 @@ export class UserService {
       where,
     });
   }
+
+  async DeleteUser(id: number): Promise<User> {
+    return this.prisma.user.update({
+      where: { id: id },
+      data: { isDeleted: true },
+    });
+  }
 }
