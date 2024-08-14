@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserService } from './user/user.service';
 import { PostService } from './post/post.service';
 import { PrismaService } from './prisma.service';
-import { UserController } from './user/user.controller';
 import { PostController } from './post/post.controller';
+//import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from './config/config.module';
+import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController, UserController, PostController],
-  providers: [AppService, UserService, PostService, PrismaService],
+  imports: [/*AuthModule,*/ ConfigModule, UserModule],
+  controllers: [AppController, PostController],
+  providers: [AppService, PostService, PrismaService],
 })
 export class AppModule {}
