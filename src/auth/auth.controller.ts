@@ -24,7 +24,7 @@ export class AuthController {
   ): Promise<any> {
     const user = await this.authService.validateUser(request.body);
     const userStatusDeleted = (
-      await this.userService.getUserByEmail(user.email)
+      await this.userService.getUserByEmail(user.user.email)
     ).isDeleted;
     if (user.userExist == true && userStatusDeleted == false) {
       const token = await this.authService.createToken(user.user);
@@ -65,5 +65,32 @@ export class AuthController {
         statusCode: 401,
         success: 0,
       });
+  }
+
+  @Post('register')
+  @ApiResponse({ status: 201, description: 'REGISTER_SUCCESS' })
+  @ApiResponse({ status: 400, description: 'BAD_REQUEST' })
+  @ApiResponse({ status: 401, description: 'UNAUTHORIZED' })
+  async register(
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<any> {
+    const success = await this.userService.create(request.body);
+    if (success) {
+      const token = await this.authService.createToken(request.body);
+      return response.status(200).json({
+        data: token,
+        message: 'REGISTER_SUCCESSFUL',
+        statusCode: 200,
+        success: 1,
+      });
+    } else {
+      return response.status(201).json({
+        data: null,
+        message: 'Email already registered',
+        statusCode: 201,
+        success: 0,
+      });
+    }
   }
 }
